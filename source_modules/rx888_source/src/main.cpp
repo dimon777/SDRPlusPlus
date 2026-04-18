@@ -453,10 +453,13 @@ private:
     }
 
     void worker() {
-        if (sddc_read_async(openDev, asyncHandler, this) != 0) {
-            flog::error("Failed to start async read");
-            running = false;
+        flog::info("RX888 worker thread started, calling sddc_read_async...");
+        int ret = sddc_read_async(openDev, asyncHandler, this);
+        flog::info("RX888 worker: sddc_read_async returned {0}", ret);
+        if (ret != 0) {
+            flog::error("RX888 async read failed with error: {0}", ret);
         }
+        running = false;
     }
 
     static void asyncHandler(const int16_t* buf, uint32_t count, void* ctx) {
