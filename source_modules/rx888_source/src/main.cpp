@@ -451,21 +451,39 @@ private:
         RX888SourceModule* _this = (RX888SourceModule*)ctx;
         if (count == 0) return;
 
+        static bool firstCall = true;
+        if (firstCall) {
+            flog::info("RX888 asyncHandler triggered! Received buffer count={0}", count);
+            firstCall = false;
+        }
+
+        uint32_t processed = 0;
+
         if (_this->directSamplingMode) {
             // Direct sampling mode: only I data
-            for (uint32_t i = 0; i < count; i++) {
-                _this->stream.writeBuf[i].re = ((float)buf[i]) / 32768.0f;
-                _this->stream.writeBuf[i].im = 0.0f;
+            while (processed < count) {
+                if (_this->stream.writerStop) return;
+                uint32_t toProcess = std::min<uint32_t>(count - processed, (uint32_t)STREAM_BUFFER_SIZE);
+                for (uint32_t i = 0; i < toProcess; i++) {
+                    _this->stream.writeBuf[i].re = ((float)buf[processed + i]) / 32768.0f;
+                    _this->stream.writeBuf[i].im = 0.0f;
+                }
+                if (!_this->stream.swap(toProcess)) { return; }
+                processed += toProcess;
             }
-            if (!_this->stream.swap(count)) { return; }
         } else {
             // Tuner mode: Interleaved I/Q
             uint32_t sampCount = count / 2;
-            for (uint32_t i = 0; i < sampCount; i++) {
-                _this->stream.writeBuf[i].re = ((float)buf[i * 2]) / 32768.0f;
-                _this->stream.writeBuf[i].im = ((float)buf[(i * 2) + 1]) / 32768.0f;
+            while (processed < sampCount) {
+                if (_this->stream.writerStop) return;
+                uint32_t toProcess = std::min<uint32_t>(sampCount - processed, (uint32_t)STREAM_BUFFER_SIZE);
+                for (uint32_t i = 0; i < toProcess; i++) {
+                    _this->stream.writeBuf[i].re = ((float)buf[(processed + i) * 2]) / 32768.0f;
+                    _this->stream.writeBuf[i].im = ((float)buf[((processed + i) * 2) + 1]) / 32768.0f;
+                }
+                if (!_this->stream.swap(toProcess)) { return; }
+                processed += toProcess;
             }
-            if (!_this->stream.swap(sampCount)) { return; }
         }
     }
 
