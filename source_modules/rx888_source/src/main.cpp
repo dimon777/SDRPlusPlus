@@ -36,7 +36,7 @@ const char* sampleRatesTxt[] = {
     "128MHz"
 };
 
-const char* directSamplingModesTxt = "Disabled\0Enabled\0";
+const char* directSamplingModesTxt = "VHF/UHF Tuner (Experimental)\0HF Direct Sampling\0";
 
 class RX888SourceModule : public ModuleManager::Instance {
 public:
@@ -531,7 +531,7 @@ private:
     int ifGainId = 0;
     std::vector<float> ifGainList;
 
-    int directSamplingMode = 0;
+    int directSamplingMode = 1;  // Default to HF direct sampling (primary supported mode)
 
     char rfDbTxt[128] = "";
     char ifDbTxt[128] = "";
