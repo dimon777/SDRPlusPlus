@@ -7,7 +7,6 @@
 #include <config.h>
 #include <gui/smgui.h>
 #include <libsddc.h>
-#include <thread>
 
 #define CONCAT(a, b) ((std::string(a) + b).c_str())
 
@@ -289,11 +288,17 @@ private:
             flog::info("sddc_set_if_gain({0}dB) ret={1}", _this->ifGainList[_this->ifGainId], ret);
         }
 
+        // sddc_read_async is non-blocking: it spawns its own internal thread
+        // and returns 0 immediately. The callback will be called from that thread.
+        flog::info("RX888 calling sddc_read_async (non-blocking)...");
+        ret = sddc_read_async(_this->openDev, asyncHandler, _this);
+        if (ret != 0) {
+            flog::error("sddc_read_async failed: {0}", ret);
+            sddc_close(_this->openDev);
+            return;
+        }
+
         _this->running = true;
-
-        flog::info("RX888 launching worker thread...");
-        _this->workerThread = std::thread(&RX888SourceModule::worker, _this);
-
         flog::info("RX888SourceModule '{0}': Start!", _this->name);
     }
 
@@ -302,10 +307,8 @@ private:
         if (!_this->running) { return; }
         _this->running = false;
         _this->stream.stopWriter();
+        flog::info("RX888 cancelling async stream...");
         sddc_cancel_async(_this->openDev);
-        if (_this->workerThread.joinable()) {
-            _this->workerThread.join();
-        }
         _this->stream.clearWriteStop();
         sddc_close(_this->openDev);
         flog::info("RX888SourceModule '{0}': Stop!", _this->name);
@@ -452,24 +455,18 @@ private:
         }
     }
 
-    void worker() {
-        flog::info("RX888 worker thread started, calling sddc_read_async...");
-        int ret = sddc_read_async(openDev, asyncHandler, this);
-        flog::info("RX888 worker: sddc_read_async returned {0}", ret);
-        if (ret != 0) {
-            flog::error("RX888 async read failed with error: {0}", ret);
-        }
-        running = false;
-    }
-
     static void asyncHandler(const int16_t* buf, uint32_t count, void* ctx) {
         RX888SourceModule* _this = (RX888SourceModule*)ctx;
-        if (count == 0) return;
 
         static bool firstCall = true;
         if (firstCall) {
-            flog::info("RX888 asyncHandler triggered! Received buffer count={0}", count);
+            flog::info("RX888 asyncHandler called! count={0}", count);
             firstCall = false;
+        }
+
+        if (count == 0) {
+            flog::error("RX888 asyncHandler received error/end-of-stream (count=0)");
+            return;
         }
 
         uint32_t processed = 0;
@@ -522,7 +519,6 @@ private:
     int srId = 0;
     int devCount = 0;
     bool serverMode = false;
-    std::thread workerThread;
 
     bool biasT = false;
     bool dither = false;
