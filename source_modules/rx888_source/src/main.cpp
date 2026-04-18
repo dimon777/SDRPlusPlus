@@ -462,7 +462,6 @@ private:
         if (_this->directSamplingMode) {
             // Direct sampling mode: only I data
             while (processed < count) {
-                if (_this->stream.writerStop) return;
                 uint32_t toProcess = std::min<uint32_t>(count - processed, (uint32_t)STREAM_BUFFER_SIZE);
                 for (uint32_t i = 0; i < toProcess; i++) {
                     _this->stream.writeBuf[i].re = ((float)buf[processed + i]) / 32768.0f;
@@ -475,7 +474,6 @@ private:
             // Tuner mode: Interleaved I/Q
             uint32_t sampCount = count / 2;
             while (processed < sampCount) {
-                if (_this->stream.writerStop) return;
                 uint32_t toProcess = std::min<uint32_t>(sampCount - processed, (uint32_t)STREAM_BUFFER_SIZE);
                 for (uint32_t i = 0; i < toProcess; i++) {
                     _this->stream.writeBuf[i].re = ((float)buf[(processed + i) * 2]) / 32768.0f;
