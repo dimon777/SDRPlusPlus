@@ -7,6 +7,7 @@
 #include <config.h>
 #include <gui/smgui.h>
 #include <libsddc.h>
+#include <thread>
 
 #define CONCAT(a, b) ((std::string(a) + b).c_str())
 
@@ -279,12 +280,7 @@ private:
 
         _this->running = true;
 
-        if (sddc_read_async(_this->openDev, asyncHandler, _this) != 0) {
-            flog::error("Failed to start async read");
-            sddc_close(_this->openDev);
-            _this->running = false;
-            return;
-        }
+        _this->workerThread = std::thread(&RX888SourceModule::worker, _this);
 
         flog::info("RX888SourceModule '{0}': Start!", _this->name);
     }
@@ -295,6 +291,9 @@ private:
         _this->running = false;
         _this->stream.stopWriter();
         sddc_cancel_async(_this->openDev);
+        if (_this->workerThread.joinable()) {
+            _this->workerThread.join();
+        }
         _this->stream.clearWriteStop();
         sddc_close(_this->openDev);
         flog::info("RX888SourceModule '{0}': Stop!", _this->name);
@@ -441,6 +440,13 @@ private:
         }
     }
 
+    void worker() {
+        if (sddc_read_async(openDev, asyncHandler, this) != 0) {
+            flog::error("Failed to start async read");
+            running = false;
+        }
+    }
+
     static void asyncHandler(const int16_t* buf, uint32_t count, void* ctx) {
         RX888SourceModule* _this = (RX888SourceModule*)ctx;
         if (count == 0) return;
@@ -485,6 +491,7 @@ private:
     int srId = 0;
     int devCount = 0;
     bool serverMode = false;
+    std::thread workerThread;
 
     bool biasT = false;
     bool dither = false;
