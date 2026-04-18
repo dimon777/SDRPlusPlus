@@ -257,29 +257,41 @@ private:
         int oret = sddc_open(&_this->openDev, _this->devId);
 
         if (oret < 0) {
-            flog::error("Could not open RX888");
+            flog::error("Could not open RX888: error code {0}", oret);
             return;
         }
+        flog::info("RX888 opened successfully");
 
-        flog::info("RX888 Sample Rate: {0}", _this->sampleRate);
+        flog::info("RX888 Sample Rate: {0}, Freq: {1}, DirectSampling: {2}",
+                   _this->sampleRate, _this->freq, _this->directSamplingMode);
 
-        sddc_set_xtal_freq(_this->openDev, _this->sampleRate);
-        sddc_set_center_freq64(_this->openDev, _this->freq);
-        sddc_set_direct_sampling(_this->openDev, _this->directSamplingMode);
+        int ret;
+        ret = sddc_set_xtal_freq(_this->openDev, (uint32_t)_this->sampleRate);
+        flog::info("sddc_set_xtal_freq ret={0}", ret);
+
+        ret = sddc_set_center_freq64(_this->openDev, (uint64_t)_this->freq);
+        flog::info("sddc_set_center_freq64 ret={0}", ret);
+
+        ret = sddc_set_direct_sampling(_this->openDev, _this->directSamplingMode);
+        flog::info("sddc_set_direct_sampling({0}) ret={1}", _this->directSamplingMode, ret);
+
         sddc_enable_bias_tee(_this->openDev, _this->biasT ? 3 : 0);
         sddc_enable_adc_dither(_this->openDev, _this->dither ? 1 : 0);
         sddc_enable_adc_pga(_this->openDev, _this->pga ? 1 : 0);
         sddc_enable_hf_highz(_this->openDev, _this->highz ? 1 : 0);
 
         if (_this->rfGainList.size() > 0) {
-            sddc_set_rf_gain(_this->openDev, _this->rfGainList[_this->rfGainId]);
+            ret = sddc_set_rf_gain(_this->openDev, _this->rfGainList[_this->rfGainId]);
+            flog::info("sddc_set_rf_gain({0}dB) ret={1}", _this->rfGainList[_this->rfGainId], ret);
         }
         if (_this->ifGainList.size() > 0) {
-            sddc_set_if_gain(_this->openDev, _this->ifGainList[_this->ifGainId]);
+            ret = sddc_set_if_gain(_this->openDev, _this->ifGainList[_this->ifGainId]);
+            flog::info("sddc_set_if_gain({0}dB) ret={1}", _this->ifGainList[_this->ifGainId], ret);
         }
 
         _this->running = true;
 
+        flog::info("RX888 launching worker thread...");
         _this->workerThread = std::thread(&RX888SourceModule::worker, _this);
 
         flog::info("RX888SourceModule '{0}': Start!", _this->name);
