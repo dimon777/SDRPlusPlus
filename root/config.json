@@ -1,0 +1,243 @@
+{
+    "bandColors": {
+        "amateur": "#FF0000FF",
+        "aviation": "#00FF00FF",
+        "broadcast": "#0000FFFF",
+        "marine": "#00FFFFFF",
+        "military": "#FFFF00FF"
+    },
+    "bandPlan": "General",
+    "bandPlanEnabled": true,
+    "bandPlanPos": 0,
+    "centerTuning": false,
+    "colorMap": "Classic",
+    "decimation": 1,
+    "fastFFT": false,
+    "fftHeight": 300,
+    "fftHold": false,
+    "fftHoldSpeed": 60,
+    "fftRate": 20,
+    "fftSize": 65536,
+    "fftSmoothing": false,
+    "fftSmoothingSpeed": 100,
+    "fftWindow": 2,
+    "frequency": 100400000.0,
+    "fullWaterfallUpdate": false,
+    "fullscreen": false,
+    "invertIQ": false,
+    "iqCorrection": false,
+    "lockMenuOrder": false,
+    "manualOffset": 0.0,
+    "max": 0.0,
+    "maximized": false,
+    "menuElements": [
+        {
+            "name": "Source",
+            "open": true
+        },
+        {
+            "name": "Radio",
+            "open": true
+        },
+        {
+            "name": "Recorder",
+            "open": true
+        },
+        {
+            "name": "Sinks",
+            "open": true
+        },
+        {
+            "name": "Frequency Manager",
+            "open": true
+        },
+        {
+            "name": "VFO Color",
+            "open": true
+        },
+        {
+            "name": "Band Plan",
+            "open": true
+        },
+        {
+            "name": "Display",
+            "open": true
+        },
+        {
+            "name": "Theme",
+            "open": true
+        },
+        {
+            "name": "Module Manager",
+            "open": true
+        },
+        {
+            "name": "Rigctl Server",
+            "open": true
+        }
+    ],
+    "menuWidth": 300,
+    "min": -120.0,
+    "moduleInstances": {
+        "Airspy Source": {
+            "enabled": true,
+            "module": "airspy_source"
+        },
+        "AirspyHF+ Source": {
+            "enabled": true,
+            "module": "airspyhf_source"
+        },
+        "Audio Sink": {
+            "enabled": true,
+            "module": "audio_sink"
+        },
+        "Audio Source": {
+            "enabled": true,
+            "module": "audio_source"
+        },
+        "BladeRF Source": {
+            "enabled": true,
+            "module": "bladerf_source"
+        },
+        "Dragon Labs Source": {
+            "enabled": true,
+            "module": "dragonlabs_source"
+        },
+        "File Source": {
+            "enabled": true,
+            "module": "file_source"
+        },
+        "FobosSDR Source": {
+            "enabled": true,
+            "module": "fobossdr_source"
+        },
+        "Frequency Manager": {
+            "enabled": true,
+            "module": "frequency_manager"
+        },
+        "HackRF Source": {
+            "enabled": true,
+            "module": "hackrf_source"
+        },
+        "Harogic Source": {
+            "enabled": true,
+            "module": "harogic_source"
+        },
+        "Hermes Source": {
+            "enabled": true,
+            "module": "hermes_source"
+        },
+        "HydraSDR Source": {
+            "enabled": true,
+            "module": "hydrasdr_source"
+        },
+        "LimeSDR Source": {
+            "enabled": true,
+            "module": "limesdr_source"
+        },
+        "Network Sink": {
+            "enabled": true,
+            "module": "network_sink"
+        },
+        "Network Source": {
+            "enabled": true,
+            "module": "network_source"
+        },
+        "PerseusSDR Source": {
+            "enabled": true,
+            "module": "perseus_source"
+        },
+        "PlutoSDR Source": {
+            "enabled": true,
+            "module": "plutosdr_source"
+        },
+        "RFNM Source": {
+            "enabled": true,
+            "module": "rfnm_source"
+        },
+        "RFspace Source": {
+            "enabled": true,
+            "module": "rfspace_source"
+        },
+        "RTL-SDR Source": {
+            "enabled": true,
+            "module": "rtl_sdr_source"
+        },
+        "RTL-TCP Source": {
+            "enabled": true,
+            "module": "rtl_tcp_source"
+        },
+        "RX888 Source": {
+            "enabled": true,
+            "module": "rx888_source"
+        },
+        "Radio": {
+            "enabled": true,
+            "module": "radio"
+        },
+        "Recorder": {
+            "enabled": true,
+            "module": "recorder"
+        },
+        "Rigctl Server": {
+            "enabled": true,
+            "module": "rigctl_server"
+        },
+        "SDR++ Server Source": {
+            "enabled": true,
+            "module": "sdrpp_server_source"
+        },
+        "SDRplay Source": {
+            "enabled": true,
+            "module": "sdrplay_source"
+        },
+        "Spectran HTTP Source": {
+            "enabled": true,
+            "module": "spectran_http_source"
+        },
+        "SpyServer Source": {
+            "enabled": true,
+            "module": "spyserver_source"
+        },
+        "USRP Source": {
+            "enabled": true,
+            "module": "usrp_source"
+        }
+    },
+    "modules": [],
+    "modulesDirectory": "/Users/dima/github/sdr/SDRPlusPlus/build",
+    "offsets": {
+        "DK5AV X-Band": -6800000000.0,
+        "Ham-It-Up": 125000000.0,
+        "Ku LNB (10700MHz)": -10700000000.0,
+        "Ku LNB (9750MHz)": -9750000000.0,
+        "MMDS S-band (1998MHz)": -1998000000.0,
+        "SpyVerter": 120000000.0
+    },
+    "resourcesDirectory": "/Users/dima/github/sdr/SDRPlusPlus/root/res",
+    "selectedOffset": "None",
+    "showMenu": true,
+    "showWaterfall": true,
+    "snrSmoothing": false,
+    "snrSmoothingSpeed": 20,
+    "source": "RX888",
+    "streams": {
+        "Radio": {
+            "muted": false,
+            "sink": "Audio",
+            "volume": 1.0
+        }
+    },
+    "theme": "Dark",
+    "uiScale": 1.0,
+    "vfoColors": {
+        "Radio": "#FFFFFF"
+    },
+    "vfoOffsets": {
+        "Radio": 51000.0
+    },
+    "windowSize": {
+        "h": 1016,
+        "w": 2026
+    }
+}

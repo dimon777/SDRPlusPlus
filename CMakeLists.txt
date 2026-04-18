@@ -37,6 +37,7 @@ option(OPT_BUILD_SPECTRAN_SOURCE "Build Spectran Source Module (Dependencies: Aa
 option(OPT_BUILD_SPECTRAN_HTTP_SOURCE "Build Spectran HTTP Source Module (no dependencies required)" ON)
 option(OPT_BUILD_SPYSERVER_SOURCE "Build SpyServer Source Module (no dependencies required)" ON)
 option(OPT_BUILD_USRP_SOURCE "Build USRP Source Module (libuhd)" OFF)
+option(OPT_BUILD_RX888_SOURCE "Build RX888 Source Module (Dependencies: libsddc)" ON)
 
 # Sinks
 option(OPT_BUILD_ANDROID_AUDIO_SINK "Build Android Audio Sink Module (Dependencies: AAudio, only for android)" OFF)
@@ -240,6 +241,9 @@ if (OPT_BUILD_USRP_SOURCE)
 add_subdirectory("source_modules/usrp_source")
 endif (OPT_BUILD_USRP_SOURCE)
 
+if (OPT_BUILD_RX888_SOURCE)
+add_subdirectory("source_modules/rx888_source")
+endif (OPT_BUILD_RX888_SOURCE)
 
 # Sink modules
 if (OPT_BUILD_ANDROID_AUDIO_SINK)
